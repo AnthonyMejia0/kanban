@@ -1,26 +1,83 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f4f7fd;
+  --foreground: #ffffff;
+  --primary-text: #000000;
+  --button-primary: #635fc7;
+  --button-primary-hover: #a8a4ff;
+  --button-secondary: rgba(99, 95, 199, 0.1);
+  --button-secondary-hover: rgba(99, 95, 199, 0.25);
+  --button-destructive: #ea5555;
+  --button-destructive-hover: #ff9898;
+  --subtask: #f4f7fd;
+  --subtask-hover: #635fc7;
+  --text-field: #ffffff;
+  --text-field-stroke: rgba(130, 143, 163, 0.25);
+  --text-field-error: #ea5555;
 }
 
-@theme inline {
+[data-theme='dark'] {
+  --background: #20212c;
+  --foreground: #2b2c37;
+  --primary-text: #ffffff;
+  --button-secondary: #ffffff;
+  --subtask: #20212c;
+  --text-field: #2b2c37;
+}
+
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary-text: var(--primary-text);
+  --color-button-primary: var(--button-primary);
+  --color-button-primary-hover: var(--button-primary-hover);
+  --color-button-secondary: var(--button-secondary);
+  --color-button-secondary-hover: var(--button-secondary-hover);
+  --color-button-destructive: var(--button-destructive);
+  --color-button-destructive-hover: var(--button-destructive-hover);
+  --color-subtask: var(--subtask);
+  --color-subtask-hover: var(--subtask-hover);
+  --color-text-field-hover: var(--text-field-hover);
+  --color-text-field-stroke: var(--text-field-stroke);
+  --color-text-field-error: var(--text-field-error);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.heading-xl {
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 34px;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.heading-lg {
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 23px;
+}
+
+.heading-md {
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 19px;
+}
+
+.heading-sm {
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 15px;
+  kerning: 2.4px;
+}
+
+.body-lg {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 23px;
+}
+
+.body-md {
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 15px;
 }
