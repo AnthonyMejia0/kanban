@@ -5,6 +5,12 @@ export type BoardType = {
   created_at: string;
 };
 
+export type NewColumn = {
+  id: string;
+  title: string;
+  position: number;
+};
+
 export type ColumnType = {
   id: string;
   board_id: string;

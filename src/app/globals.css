@@ -6,6 +6,8 @@
   --background: #f4f7fd;
   --foreground: #ffffff;
   --primary-text: #000000;
+  --secondary-text: #828fa3;
+  --urgent-text: #ea5555;
   --button-primary: #635fc7;
   --button-primary-hover: #a8a4ff;
   --button-secondary: rgba(99, 95, 199, 0.1);
@@ -32,6 +34,8 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary-text: var(--primary-text);
+  --color-secondary-text: var(--secondary-text);
+  --color-urgent-text: var(--urgent-text);
   --color-button-primary: var(--button-primary);
   --color-button-primary-hover: var(--button-primary-hover);
   --color-button-secondary: var(--button-secondary);
@@ -80,4 +84,8 @@
   font-size: 12px;
   font-weight: bold;
   line-height: 15px;
+}
+
+body {
+  @apply transition-colors duration-200 ease-in-out;
 }

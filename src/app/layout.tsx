@@ -28,9 +28,17 @@ export default function RootLayout({
       className={cn('h-full', 'antialiased', plusJakartaSans.variable)}
       suppressHydrationWarning
     >
-      <body className="min-h-screen min-h-dvh flex flex-col bg-background">
+      <body className="min-h-dvh flex flex-col bg-background">
         <ThemeProvider defaultTheme="dark">
-          <Toaster position="top-right" />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              classNames: {
+                success: 'bg-white! text-black!',
+                error: 'bg-red-500! text-white!',
+              },
+            }}
+          />
           <AuthProvider>
             <BoardsProvider>{children}</BoardsProvider>
           </AuthProvider>
