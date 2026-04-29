@@ -5,6 +5,7 @@ import {
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 
@@ -13,10 +14,12 @@ type DialogContextType = {
   editingBoard: boolean;
   sidebarOpen: boolean;
   mobileSidebarOpen: boolean;
+  createTaskOpen: boolean;
   setCreateBoardOpen: Dispatch<SetStateAction<boolean>>;
   setEditingBoard: Dispatch<SetStateAction<boolean>>;
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
   setMobileSidebarOpen: Dispatch<SetStateAction<boolean>>;
+  setCreateTaskOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const DialogContext = createContext<DialogContextType | undefined>(undefined);
@@ -26,6 +29,13 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
   const [editingBoard, setEditingBoard] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [createTaskOpen, setCreateTaskOpen] = useState(false);
+
+  useEffect(() => {
+    if (!createBoardOpen) {
+      setEditingBoard(false);
+    }
+  }, [createBoardOpen]);
 
   return (
     <DialogContext.Provider
@@ -38,6 +48,8 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
         setSidebarOpen,
         mobileSidebarOpen,
         setMobileSidebarOpen,
+        createTaskOpen,
+        setCreateTaskOpen,
       }}
     >
       {children}

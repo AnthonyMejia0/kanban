@@ -4,6 +4,8 @@ import { useBoards } from '@/context/BoardContext';
 import VerticalEllipses from '@/assets/icon-vertical-ellipsis.svg';
 import LogoMobile from '@/assets/logo-mobile.svg';
 import ChevronDown from '@/assets/icon-chevron-down.svg';
+import LogoDark from '@/assets/logo-dark.svg';
+import LogoLight from '@/assets/logo-light.svg';
 import { useEffect, useState } from 'react';
 import {
   DropdownMenu,
@@ -16,14 +18,21 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { useRouter } from 'next/navigation';
 import MobileSidebar from './MobileSidebar';
 import { useDialog } from '@/context/DialogContext';
+import { useTheme } from 'next-themes';
 
 function NavBar() {
   const [mounted, setMounted] = useState(false);
-  const { activeBoard } = useBoards();
+  const { activeBoard, columns } = useBoards();
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
-  const { mobileSidebarOpen, setCreateBoardOpen, setEditingBoard } =
-    useDialog();
+  const { theme } = useTheme();
+  const {
+    sidebarOpen,
+    mobileSidebarOpen,
+    setCreateBoardOpen,
+    setEditingBoard,
+    setCreateTaskOpen,
+  } = useDialog();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -41,9 +50,26 @@ function NavBar() {
 
   return (
     <div className="w-full md:flex-1 h-16 max-h-16 md:h-20 md:max-h-20 bg-foreground flex justify-between items-center px-4 md:px-6 border-b border-b-[#979797] transition-colors duration-200 ease-in-out">
-      <p className="hidden md:inline-block heading-lg md:heading-xl text-primary-text flex-1 mr-4">
-        {activeBoard?.title ?? 'Select a board'}
-      </p>
+      <div className="flex flex-row items-center">
+        {!sidebarOpen && (
+          <div>
+            <div className={`${theme === 'dark' && 'hidden'} h-full ml-3 mr-8`}>
+              <LogoDark />
+            </div>
+            <div
+              className={`${theme === 'light' && 'hidden'} h-full ml-3 mr-8`}
+            >
+              <LogoLight />
+            </div>
+          </div>
+        )}
+        {!sidebarOpen && (
+          <div className="h-16 max-h-16 md:h-20 md:max-h-20 w-px bg-[#979797]"></div>
+        )}
+        <p className="hidden md:inline-block heading-lg md:heading-xl text-primary-text flex-1 ml-6 mr-4">
+          {activeBoard?.title ?? 'Select a board'}
+        </p>
+      </div>
 
       <MobileSidebar>
         <div className="md:hidden flex flex-row space-x-4">
@@ -61,14 +87,16 @@ function NavBar() {
 
       <div className="flex flex-row items-center space-x-4">
         <button
+          onClick={() => setCreateTaskOpen(true)}
           className="hidden md:inline-block cursor-pointer heading-md w-41 h-12 rounded-3xl text-center bg-button-primary hover:bg-button-primary-hover text-white disabled:opacity-25 disabled:pointer-events-none"
-          disabled={!activeBoard}
+          disabled={!activeBoard || columns.length === 0}
         >
           + Add New Task
         </button>
         <button
+          onClick={() => setCreateTaskOpen(true)}
           className="md:hidden heading-md w-12 h-8 rounded-3xl text-center bg-button-primary hover:bg-button-primary-hover text-white disabled:opacity-25 disabled:pointer-events-none"
-          disabled={!activeBoard}
+          disabled={!activeBoard || columns.length === 0}
         >
           +
         </button>

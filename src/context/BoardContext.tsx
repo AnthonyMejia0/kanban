@@ -249,6 +249,12 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
   }, [boards]);
 
   useEffect(() => {
+    if (!activeBoard) return;
+    console.log(`Loading board: ${activeBoard.id}`);
+    loadBoard(activeBoard.id);
+  }, [activeBoard]);
+
+  useEffect(() => {
     loadBoards();
   }, []);
 

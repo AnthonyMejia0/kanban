@@ -1,6 +1,5 @@
 'use client';
 
-import CreateBoard from '@/components/dialog/CreateBoard';
 import NavBar from '@/components/nav/NavBar';
 import NoBoards from '@/components/empty/NoBoards';
 import NoColumns from '@/components/empty/NoColumns';
@@ -10,21 +9,17 @@ import { useBoards } from '@/context/BoardContext';
 import { useEffect } from 'react';
 import ShowSidebarIcon from '@/assets/icon-show-sidebar.svg';
 import { useDialog } from '@/context/DialogContext';
+import DialogContainer from '@/components/dialog/DialogContainer';
+import Board from '@/components/data/Board';
 
 function Dashboard() {
   const { boards, activeBoard, columns } = useBoards();
-  const { createBoardOpen, setEditingBoard, sidebarOpen, setSidebarOpen } =
-    useDialog();
-
-  useEffect(() => {
-    if (!createBoardOpen) {
-      setEditingBoard(false);
-    }
-  }, [createBoardOpen]);
+  const { sidebarOpen, setSidebarOpen } = useDialog();
 
   return (
     <div className="w-full h-dvh relative">
-      <CreateBoard />
+      <DialogContainer />
+
       <div className="flex flex-row w-full h-full">
         <Sidebar />
         <div className="flex-1 flex flex-col">
@@ -32,6 +27,7 @@ function Dashboard() {
           <div className="flex flex-1 w-full justify-center items-center">
             {boards.length === 0 && <NoBoards />}
             {activeBoard && columns.length < 1 && <NoColumns />}
+            {activeBoard && columns.length > 0 && <Board />}
           </div>
         </div>
       </div>
