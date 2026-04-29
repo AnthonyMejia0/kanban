@@ -4,36 +4,26 @@ import { useBoards } from '@/context/BoardContext';
 import VerticalEllipses from '@/assets/icon-vertical-ellipsis.svg';
 import LogoMobile from '@/assets/logo-mobile.svg';
 import ChevronDown from '@/assets/icon-chevron-down.svg';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+} from '../ui/dropdown-menu';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { useRouter } from 'next/navigation';
 import MobileSidebar from './MobileSidebar';
+import { useDialog } from '@/context/DialogContext';
 
-type NavBarProps = {
-  sidebarOpen: boolean;
-  setSidebarOpen: Dispatch<SetStateAction<boolean>>;
-  setEditing: Dispatch<SetStateAction<boolean>>;
-  setOpenCreateBoard: Dispatch<SetStateAction<boolean>>;
-};
-
-function NavBar({
-  sidebarOpen,
-  setSidebarOpen,
-  setEditing,
-  setOpenCreateBoard,
-}: NavBarProps) {
+function NavBar() {
   const [mounted, setMounted] = useState(false);
-  const [openMobileSidebar, setOpenMobileSidebar] = useState(false);
   const { activeBoard } = useBoards();
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
+  const { mobileSidebarOpen, setCreateBoardOpen, setEditingBoard } =
+    useDialog();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -55,18 +45,14 @@ function NavBar({
         {activeBoard?.title ?? 'Select a board'}
       </p>
 
-      <MobileSidebar
-        open={openMobileSidebar}
-        setOpen={setOpenMobileSidebar}
-        setOpenCreateBoard={setOpenCreateBoard}
-      >
+      <MobileSidebar>
         <div className="md:hidden flex flex-row space-x-4">
           <LogoMobile />
           <div className="flex flex-row items-center heading-lg md:heading-xl text-primary-text cursor-pointer">
             {activeBoard?.title ?? 'Select a board'}
             <ChevronDown
               className={`ml-2 ${
-                openMobileSidebar && 'scale-y-[-1]'
+                mobileSidebarOpen && 'scale-y-[-1]'
               } ease-in-out duration-500`}
             />
           </div>
@@ -99,8 +85,8 @@ function NavBar({
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={() => {
-                  setEditing(true);
-                  setOpenCreateBoard(true);
+                  setEditingBoard(true);
+                  setCreateBoardOpen(true);
                 }}
                 disabled={!activeBoard}
                 className="px-4 body-lg text-secondary-text hover:bg-button-secondary-hover disabled:pointer-events-none"

@@ -1,6 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import LogoLight from '@/assets/logo-light.svg';
 import LogoDark from '@/assets/logo-dark.svg';
 import BoardIcon from '@/assets/icon-board.svg';
@@ -9,19 +9,19 @@ import DarkIcon from '@/assets/icon-dark-theme.svg';
 import HideSidebaricon from '@/assets/icon-hide-sidebar.svg';
 import { useTheme } from 'next-themes';
 import { useBoards } from '@/context/BoardContext';
-import { Button } from './ui/button';
-import { Switch } from './ui/switch';
+import { Button } from '../ui/button';
+import { Switch } from '../ui/switch';
+import { useDialog } from '@/context/DialogContext';
 
-type SidebarProps = {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  setOpenCreateBoard: Dispatch<SetStateAction<boolean>>;
-};
-
-function Sidebar({ open, setOpen, setOpenCreateBoard }: SidebarProps) {
+function Sidebar() {
   const [mounted, setMounted] = useState(false);
   const { boards, activeBoard, selectBoard } = useBoards();
   const { theme, setTheme } = useTheme();
+  const {
+    sidebarOpen: open,
+    setSidebarOpen: setOpen,
+    setCreateBoardOpen,
+  } = useDialog();
 
   const handleChangeTheme = (checked: boolean) => {
     if (checked) {
@@ -75,7 +75,7 @@ function Sidebar({ open, setOpen, setOpenCreateBoard }: SidebarProps) {
             </Button>
           ))}
           <Button
-            onClick={() => setOpenCreateBoard(true)}
+            onClick={() => setCreateBoardOpen(true)}
             className={`flex flex-row justify-start space-x-3 pl-8 w-full h-12 cursor-pointer rounded-l-none rounded-r-full text-button-primary bg-none hover:bg-button-secondary-hover`}
           >
             <BoardIcon />

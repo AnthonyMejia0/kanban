@@ -1,22 +1,16 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Field, FieldGroup } from './ui/field';
-import { Button } from './ui/button';
+import { useEffect, useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Field, FieldGroup } from '../ui/field';
+import { Button } from '../ui/button';
 import CloseIcon from '@/assets/icon-cross.svg';
 import { NewColumn } from '@/types/board';
 import { useBoards } from '@/context/BoardContext';
-import { title } from 'process';
 import { useUser } from '@/context/AuthContext';
 import { toast } from 'sonner';
-import { Spinner } from './ui/spinner';
+import { Spinner } from '../ui/spinner';
+import { useDialog } from '@/context/DialogContext';
 
-type CreateBoardProps = {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  editing?: boolean;
-};
-
-function CreateBoard({ open, setOpen, editing = false }: CreateBoardProps) {
+function CreateBoard() {
   const [name, setName] = useState('');
   const [columns, setColumns] = useState<NewColumn[]>([]);
   const [loading, setLoading] = useState(false);
@@ -27,6 +21,11 @@ function CreateBoard({ open, setOpen, editing = false }: CreateBoardProps) {
     updateBoard,
   } = useBoards();
   const { user } = useUser();
+  const {
+    createBoardOpen: open,
+    setCreateBoardOpen: setOpen,
+    editingBoard: editing,
+  } = useDialog();
   const buttonLabel = editing ? 'Save Changes' : 'Create New Board';
 
   const handleAddColumn = () => {

@@ -28,9 +28,17 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
+  if (path === '/' && user) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  if (path === '/' && !user) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ['/', '/preview', '/login', '/signup', '/reset'],
+  matcher: ['/', '/dashboard', '/preview', '/login', '/signup', '/reset'],
 };

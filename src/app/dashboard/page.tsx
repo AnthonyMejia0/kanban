@@ -1,59 +1,37 @@
 'use client';
 
-import CreateBoard from '@/components/CreateBoard';
-import NavBar from '@/components/NavBar';
-import NoBoards from '@/components/NoBoards';
-import NoColumns from '@/components/NoColumns';
-import Sidebar from '@/components/Sidebar';
+import CreateBoard from '@/components/dialog/CreateBoard';
+import NavBar from '@/components/nav/NavBar';
+import NoBoards from '@/components/empty/NoBoards';
+import NoColumns from '@/components/empty/NoColumns';
+import Sidebar from '@/components/nav/Sidebar';
 import { Button } from '@/components/ui/button';
 import { useBoards } from '@/context/BoardContext';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import ShowSidebarIcon from '@/assets/icon-show-sidebar.svg';
+import { useDialog } from '@/context/DialogContext';
 
 function Dashboard() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [openCreateBoard, setOpenCreateBoard] = useState(false);
-  const [openCreateColumn, setOpenCreateColumn] = useState(false);
-  const [editBoard, setEditBoard] = useState(false);
   const { boards, activeBoard, columns } = useBoards();
+  const { createBoardOpen, setEditingBoard, sidebarOpen, setSidebarOpen } =
+    useDialog();
 
   useEffect(() => {
-    if (!openCreateBoard) {
-      setEditBoard(false);
+    if (!createBoardOpen) {
+      setEditingBoard(false);
     }
-  }, [openCreateBoard]);
+  }, [createBoardOpen]);
 
   return (
     <div className="w-full h-dvh relative">
-      <CreateBoard
-        open={openCreateBoard}
-        setOpen={setOpenCreateBoard}
-        editing={editBoard}
-      />
+      <CreateBoard />
       <div className="flex flex-row w-full h-full">
-        <Sidebar
-          open={sidebarOpen}
-          setOpen={setSidebarOpen}
-          setOpenCreateBoard={setOpenCreateBoard}
-        />
+        <Sidebar />
         <div className="flex-1 flex flex-col">
-          <NavBar
-            sidebarOpen={menuOpen}
-            setSidebarOpen={setMenuOpen}
-            setEditing={setEditBoard}
-            setOpenCreateBoard={setOpenCreateBoard}
-          />
+          <NavBar />
           <div className="flex flex-1 w-full justify-center items-center">
-            {boards.length === 0 && (
-              <NoBoards setOpenCreateBoard={setOpenCreateBoard} />
-            )}
-            {activeBoard && columns.length < 1 && (
-              <NoColumns
-                setOpen={setOpenCreateBoard}
-                setEditing={setEditBoard}
-              />
-            )}
+            {boards.length === 0 && <NoBoards />}
+            {activeBoard && columns.length < 1 && <NoColumns />}
           </div>
         </div>
       </div>
@@ -65,7 +43,6 @@ function Dashboard() {
       >
         <ShowSidebarIcon className="mt-1.5" />
       </Button>
-      {/* )} */}
     </div>
   );
 }

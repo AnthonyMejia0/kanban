@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@/components/ui/sonner';
 import { AuthProvider } from '@/context/AuthContext';
 import { BoardsProvider } from '@/context/BoardContext';
+import { DialogProvider } from '@/context/DialogContext';
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
@@ -40,7 +41,9 @@ export default function RootLayout({
             }}
           />
           <AuthProvider>
-            <BoardsProvider>{children}</BoardsProvider>
+            <BoardsProvider>
+              <DialogProvider>{children}</DialogProvider>
+            </BoardsProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

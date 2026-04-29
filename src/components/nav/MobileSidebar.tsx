@@ -1,12 +1,6 @@
 'use client';
 
-import { Dispatch, SetStateAction } from 'react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
+import React, { Dispatch, SetStateAction } from 'react';
 import { useBoards } from '@/context/BoardContext';
 import {
   Dialog,
@@ -14,29 +8,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
-import { Button } from './ui/button';
+} from '../ui/dialog';
+import { Button } from '../ui/button';
 import BoardIcon from '@/assets/icon-board.svg';
 import LightIcon from '@/assets/icon-light-theme.svg';
 import DarkIcon from '@/assets/icon-dark-theme.svg';
 import { useTheme } from 'next-themes';
-import { Switch } from './ui/switch';
+import { Switch } from '../ui/switch';
+import { useDialog } from '@/context/DialogContext';
 
-type MobileSidebarProps = {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  setOpenCreateBoard: Dispatch<SetStateAction<boolean>>;
-  children: React.ReactNode;
-};
-
-function MobileSidebar({
-  open,
-  setOpen,
-  setOpenCreateBoard,
-  children,
-}: MobileSidebarProps) {
+function MobileSidebar({ children }: { children: React.ReactNode }) {
   const { boards, selectBoard, activeBoard } = useBoards();
   const { theme, setTheme } = useTheme();
+  const {
+    setCreateBoardOpen,
+    mobileSidebarOpen: open,
+    setMobileSidebarOpen: setOpen,
+  } = useDialog();
 
   const handleChangeTheme = (checked: boolean) => {
     if (checked) {
@@ -82,7 +70,7 @@ function MobileSidebar({
               </Button>
             ))}
             <Button
-              onClick={() => setOpenCreateBoard(true)}
+              onClick={() => setCreateBoardOpen(true)}
               className={`flex flex-row justify-start space-x-3 pl-6 w-full h-12 cursor-pointer rounded-l-none rounded-r-full text-button-primary hover:text-primary-text bg-none hover:bg-button-primary-hover`}
             >
               <BoardIcon />
