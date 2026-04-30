@@ -2,10 +2,11 @@ import { useBoards } from '@/context/BoardContext';
 import Task from './Task';
 
 type ColumnProps = {
+  id: string;
   title: string;
 };
 
-function Column({ title }: ColumnProps) {
+function Column({ id, title }: ColumnProps) {
   const { tasks, subtasks } = useBoards();
 
   return (
@@ -14,9 +15,11 @@ function Column({ title }: ColumnProps) {
         <div className="bg-green-500 w-3.75 h-3.75 rounded-full"></div>
         <p className="text-secondary-text heading-sm">{title}</p>
       </div>
-      {tasks.map((task) => (
-        <Task key={task.id} task={task} subtasks={subtasks} />
-      ))}
+      {tasks
+        .filter((task) => task.column_id === id)
+        .map((task) => (
+          <Task key={task.id} task={task} subtasks={subtasks} />
+        ))}
     </div>
   );
 }

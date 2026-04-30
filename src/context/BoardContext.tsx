@@ -24,7 +24,9 @@ type BoardsContextType = {
   subtasks: SubtaskType[];
   activeBoard: BoardType | null;
   currentTask: TaskType | null;
-  setCurrentTask: Dispatch<SetStateAction<TaskType | null>>;
+  // setCurrentTask: Dispatch<SetStateAction<TaskType | null>>;
+  selectedTaskId: string | null;
+  setSelectedTaskId: Dispatch<SetStateAction<string | null>>;
   loadBoards: () => Promise<void>;
   createBoard: (
     title: string,
@@ -58,8 +60,10 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [subtasks, setSubtasks] = useState<SubtaskType[]>([]);
   const [activeBoard, setActiveBoard] = useState<BoardType | null>(null);
-  const [currentTask, setCurrentTask] = useState<TaskType | null>(null);
+  // const [currentTask, setCurrentTask] = useState<TaskType | null>(null);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const supabase = getSupabaseBrowserClient();
+  const currentTask = tasks.find((task) => task.id === selectedTaskId) || null;
 
   const getUser = async () => {
     const {
@@ -289,13 +293,6 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
         setSubtasks([]);
       }
     }
-
-    if (currentTask) {
-      const task = tasks.find((t) => t.id === currentTask.id);
-      if (task) {
-        setCurrentTask(task);
-      }
-    }
   };
 
   const selectBoard = async (board: BoardType) => {
@@ -307,22 +304,61 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
     currentCompletion: boolean,
     subtaskId: string,
   ) => {
-    await supabase
+    setSubtasks((prev) =>
+      prev.map((subtask) =>
+        subtask.id === subtaskId
+          ? {
+              ...subtask,
+              complete: !currentCompletion,
+            }
+          : subtask,
+      ),
+    );
+
+    const { error } = await supabase
       .from('kanban_subtasks')
       .update({
         complete: !currentCompletion,
       })
       .eq('id', subtaskId);
 
-    await loadBoards();
+    if (error) {
+      setSubtasks((prev) =>
+        prev.map((subtask) =>
+          subtask.id === subtaskId
+            ? {
+                ...subtask,
+                complete: currentCompletion,
+              }
+            : subtask,
+        ),
+      );
+    }
   };
 
   const updateTaskColumn = async (taskId: string, columnId: string) => {
-    await supabase
+    const previousTasks = tasks.map((task) => ({ ...task }));
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === taskId ? { ...task, column_id: columnId } : task,
+      ),
+    );
+
+    // setCurrentTask((prev) =>
+    //   prev?.id === taskId ? { ...prev, column_id: columnId } : prev,
+    // );
+
+    const { error } = await supabase
       .from('kanban_tasks')
-      .update({ column_id: columnId })
+      .update({
+        column_id: columnId,
+      })
       .eq('id', taskId);
-    await loadBoards();
+
+    if (error) {
+      setTasks(previousTasks);
+    }
   };
 
   useEffect(() => {
@@ -363,7 +399,9 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
         subtasks,
         activeBoard,
         currentTask,
-        setCurrentTask,
+        // setCurrentTask,
+        selectedTaskId,
+        setSelectedTaskId,
         loadBoards,
         createBoard,
         createTask,

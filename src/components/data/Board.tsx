@@ -9,7 +9,7 @@ function Board() {
   return (
     <div className="w-full h-full flex flex-row gap-6 p-6 overflow-x-scroll overflow-y-hidden">
       {columns.map((column, i) => (
-        <Column key={i} title={column.title} />
+        <Column key={i} id={column.id} title={column.title} />
       ))}
       <button
         onClick={() => {

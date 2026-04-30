@@ -8,12 +8,12 @@ type TaskProps = {
 };
 
 function Task({ task, subtasks }: TaskProps) {
-  const { setCurrentTask } = useBoards();
+  const { setSelectedTaskId } = useBoards();
   const { setEditTaskOpen } = useDialog();
   const completedSubtasks = subtasks.filter((subtask) => subtask.complete);
 
   const handleClick = () => {
-    setCurrentTask(task);
+    setSelectedTaskId(task.id);
     setEditTaskOpen(true);
   };
 
