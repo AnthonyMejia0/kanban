@@ -80,7 +80,7 @@ export type Database = {
           complete?: boolean
           created_at?: string
           id?: string
-          position: number
+          position?: number
           task_id: string
           title: string
         }
@@ -109,6 +109,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          position: number
           status: string
           title: string
         }
@@ -118,6 +119,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          position: number
           status?: string
           title: string
         }
@@ -127,6 +129,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          position?: number
           status?: string
           title?: string
         }

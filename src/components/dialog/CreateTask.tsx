@@ -2,9 +2,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Field, FieldGroup } from '../ui/field';
 import { Button } from '../ui/button';
 import { useDialog } from '@/context/DialogContext';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Spinner } from '../ui/spinner';
 import CloseIcon from '@/assets/icon-cross.svg';
+import { useBoards } from '@/context/BoardContext';
+import { toast } from 'sonner';
+import { ColumnType } from '@/types/board';
 
 const descriptionPlaceholder =
   "e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little.";
@@ -14,10 +17,37 @@ function CreateTask() {
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [subtasks, setSubtasks] = useState<string[]>([]);
+  const [column, setColumn] = useState<ColumnType | null>(null);
   const { createTaskOpen, setCreateTaskOpen } = useDialog();
+  const { columns, createTask } = useBoards();
+
+  const handleChangeColumn = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setColumn(columns.find((c) => c.title === e.target.value) || null);
+  };
 
   const handleCreateTask = async () => {
-    // Handle task creation logic here
+    if (!title.trim()) {
+      toast.error('Task title cannot be empty.');
+      return;
+    }
+
+    if (!column) {
+      toast.error('Please select a column.');
+      return;
+    }
+
+    setLoading(true);
+
+    const success = await createTask(title, description, subtasks, column.id);
+
+    if (!success) {
+      toast.error('Failed to create task.');
+      return;
+    }
+
+    toast.success('Task created successfully.');
+    setLoading(false);
+    setCreateTaskOpen(false);
   };
 
   return (
@@ -93,6 +123,24 @@ function CreateTask() {
             >
               + Add New Subtask
             </Button>
+
+            <label htmlFor="status" className="body-md text-secondary-text">
+              Status
+            </label>
+            <select
+              name="status"
+              id="status"
+              value={column?.title || ''}
+              onChange={handleChangeColumn}
+              className="cursor-pointer border border-[#828FA3] px-4 py-2 rounded-sm w-full"
+            >
+              {columns.map((column) => (
+                <option key={column.id} value={column.title}>
+                  {column.title}
+                </option>
+              ))}
+            </select>
+
             <Button
               onClick={handleCreateTask}
               className="heading-md text-white bg-button-primary hover:bg-button-primary-hover cursor-pointer px-4.5  py-4.5 mt-4 rounded-3xl disabled:pointer-events-none"

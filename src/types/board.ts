@@ -27,6 +27,7 @@ export type TaskType = {
   description: string;
   status: string;
   created_at: string;
+  position: number;
 };
 
 export type SubtaskType = {
@@ -34,6 +35,6 @@ export type SubtaskType = {
   task_id: string;
   title: string;
   complete: boolean;
-  position: number;
   created_at: string;
+  position: number;
 };

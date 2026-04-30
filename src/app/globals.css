@@ -20,6 +20,7 @@
   --text-field-stroke: rgba(130, 143, 163, 0.25);
   --text-field-error: #ea5555;
   --new-column: #e9effa;
+  --subtask: #f4f7fd;
 }
 
 [data-theme='dark'] {
@@ -30,6 +31,7 @@
   --subtask: #20212c;
   --text-field: #2b2c37;
   --new-column: #2b2c37;
+  --subtask: #20212c;
 }
 
 @theme {
@@ -50,6 +52,7 @@
   --color-text-field-stroke: var(--text-field-stroke);
   --color-text-field-error: var(--text-field-error);
   --color-new-column: var(--new-column);
+  --color-subtask: var(--subtask);
 }
 
 .heading-xl {

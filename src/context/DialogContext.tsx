@@ -1,5 +1,6 @@
 'use client';
 
+import { TaskType } from '@/types/board';
 import {
   createContext,
   Dispatch,
@@ -15,11 +16,13 @@ type DialogContextType = {
   sidebarOpen: boolean;
   mobileSidebarOpen: boolean;
   createTaskOpen: boolean;
+  editTaskOpen: boolean;
   setCreateBoardOpen: Dispatch<SetStateAction<boolean>>;
   setEditingBoard: Dispatch<SetStateAction<boolean>>;
   setSidebarOpen: Dispatch<SetStateAction<boolean>>;
   setMobileSidebarOpen: Dispatch<SetStateAction<boolean>>;
   setCreateTaskOpen: Dispatch<SetStateAction<boolean>>;
+  setEditTaskOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const DialogContext = createContext<DialogContextType | undefined>(undefined);
@@ -30,6 +33,7 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [createTaskOpen, setCreateTaskOpen] = useState(false);
+  const [editTaskOpen, setEditTaskOpen] = useState(false);
 
   useEffect(() => {
     if (!createBoardOpen) {
@@ -50,6 +54,8 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
         setMobileSidebarOpen,
         createTaskOpen,
         setCreateTaskOpen,
+        editTaskOpen,
+        setEditTaskOpen,
       }}
     >
       {children}

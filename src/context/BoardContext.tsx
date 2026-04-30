@@ -1,6 +1,13 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import {
   BoardType,
@@ -16,11 +23,19 @@ type BoardsContextType = {
   tasks: TaskType[];
   subtasks: SubtaskType[];
   activeBoard: BoardType | null;
+  currentTask: TaskType | null;
+  setCurrentTask: Dispatch<SetStateAction<TaskType | null>>;
   loadBoards: () => Promise<void>;
   createBoard: (
     title: string,
     userId: string,
     columns: NewColumn[],
+  ) => Promise<boolean>;
+  createTask: (
+    title: string,
+    description: string,
+    subtasks: string[],
+    columnId: string,
   ) => Promise<boolean>;
   updateBoard: (
     boardId: string,
@@ -28,6 +43,11 @@ type BoardsContextType = {
     columns: NewColumn[],
   ) => Promise<boolean>;
   selectBoard: (board: BoardType) => Promise<void>;
+  toggleSubtask: (
+    currentCompletion: boolean,
+    subtaskId: string,
+  ) => Promise<void>;
+  updateTaskColumn: (taskId: string, columnId: string) => Promise<void>;
 };
 
 const BoardsContext = createContext<BoardsContextType | undefined>(undefined);
@@ -38,6 +58,7 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
   const [tasks, setTasks] = useState<TaskType[]>([]);
   const [subtasks, setSubtasks] = useState<SubtaskType[]>([]);
   const [activeBoard, setActiveBoard] = useState<BoardType | null>(null);
+  const [currentTask, setCurrentTask] = useState<TaskType | null>(null);
   const supabase = getSupabaseBrowserClient();
 
   const getUser = async () => {
@@ -95,6 +116,52 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
         .insert(formattedColumns);
 
       if (columnsError) return false;
+    }
+
+    await loadBoards();
+
+    return true;
+  };
+
+  const createTask = async (
+    title: string,
+    description: string = '',
+    subtasks: string[],
+    columnId: string,
+  ) => {
+    const user = await getUser();
+    if (!title || !user || !subtasks || !activeBoard) return false;
+
+    const lastPosition =
+      tasks.length === 0 ? 1000 : tasks[tasks.length - 1].position + 1000;
+
+    const { data: task, error: taskError } = await supabase
+      .from('kanban_tasks')
+      .insert({
+        board_id: activeBoard.id,
+        title,
+        description,
+        position: lastPosition,
+        column_id: columnId,
+      })
+      .select()
+      .single();
+
+    if (!task || taskError) return false;
+
+    if (subtasks.length > 0) {
+      const formattedSubtasks = subtasks.map((subtask, i) => ({
+        task_id: task.id,
+        title: subtask,
+        complete: false,
+        position: (i + 1) * 1000,
+      }));
+
+      const { error: subtasksError } = await supabase
+        .from('kanban_subtasks')
+        .insert(formattedSubtasks);
+
+      if (subtasksError) return false;
     }
 
     await loadBoards();
@@ -212,7 +279,8 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
         const { data: subtasksData } = await supabase
           .from('kanban_subtasks')
           .select('*')
-          .in('task_id', taskIds);
+          .in('task_id', taskIds)
+          .order('position');
 
         if (subtasksData) {
           setSubtasks(subtasksData);
@@ -221,11 +289,40 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
         setSubtasks([]);
       }
     }
+
+    if (currentTask) {
+      const task = tasks.find((t) => t.id === currentTask.id);
+      if (task) {
+        setCurrentTask(task);
+      }
+    }
   };
 
   const selectBoard = async (board: BoardType) => {
     setActiveBoard(board);
     await loadBoard(board.id);
+  };
+
+  const toggleSubtask = async (
+    currentCompletion: boolean,
+    subtaskId: string,
+  ) => {
+    await supabase
+      .from('kanban_subtasks')
+      .update({
+        complete: !currentCompletion,
+      })
+      .eq('id', subtaskId);
+
+    await loadBoards();
+  };
+
+  const updateTaskColumn = async (taskId: string, columnId: string) => {
+    await supabase
+      .from('kanban_tasks')
+      .update({ column_id: columnId })
+      .eq('id', taskId);
+    await loadBoards();
   };
 
   useEffect(() => {
@@ -250,7 +347,6 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!activeBoard) return;
-    console.log(`Loading board: ${activeBoard.id}`);
     loadBoard(activeBoard.id);
   }, [activeBoard]);
 
@@ -266,10 +362,15 @@ export function BoardsProvider({ children }: { children: React.ReactNode }) {
         tasks,
         subtasks,
         activeBoard,
+        currentTask,
+        setCurrentTask,
         loadBoards,
         createBoard,
+        createTask,
         updateBoard,
         selectBoard,
+        toggleSubtask,
+        updateTaskColumn,
       }}
     >
       {children}
