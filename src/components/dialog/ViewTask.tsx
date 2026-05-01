@@ -6,6 +6,7 @@ import { Field, FieldGroup } from '../ui/field';
 import { useUIStore } from '@/stores/ui-store';
 import { useNavStore } from '@/stores/nav-store';
 import { useBoardStore } from '@/stores/board-store';
+import CheckIcon from '@/assets/icon-check.svg';
 
 function ViewTask() {
   const columns = useBoardStore((s) => s.columns);
@@ -80,9 +81,16 @@ function ViewTask() {
                   onPressedChange={() =>
                     handleToggle(subtask.complete, subtask.id)
                   }
-                  className="cursor-pointer disabled:pointer-events-none w-full h-max rounded bg-subtask flex flex-row justify-start items-center gap-4 p-3"
+                  className="cursor-pointer disabled:pointer-events-none w-full h-max rounded bg-subtask hover:bg-button-secondary-hover flex flex-row justify-start items-center gap-4 p-3"
                   pressed={subtask.complete}
                 >
+                  <div
+                    className={`w-4 h-4 flex justify-center items-center rounded-xs ${subtask.complete ? 'bg-button-primary' : 'bg-white'}`}
+                  >
+                    {subtask.complete && (
+                      <CheckIcon className="max-w-3 max-h-3 text-white" />
+                    )}
+                  </div>
                   <p
                     className={`body-md text-secondary-text ${
                       subtask.complete && 'line-through'
@@ -105,7 +113,7 @@ function ViewTask() {
               id="status"
               value={currentColumn?.title || ''}
               onChange={handleUpdateColumn}
-              className="cursor-pointer border border-[#828FA3] px-4 py-2 rounded-sm w-full disabled:opacity-50"
+              className="cursor-pointer border border-[#828FA3] focus:border-button-primary px-4 py-2 rounded-sm w-full disabled:opacity-50"
             >
               {columns.map((column) => (
                 <option key={column.id} value={column.title}>

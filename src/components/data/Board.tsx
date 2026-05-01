@@ -8,7 +8,7 @@ function Board() {
   const setEditingBoard = useUIStore((s) => s.setEditingBoard);
 
   return (
-    <div className="w-full h-full flex flex-row gap-6 p-6 overflow-x-scroll overflow-y-hidden">
+    <div className="w-full min-w-max h-full flex gap-6 p-6 overflow-x-auto overflow-y-hidden">
       {columns.map((column, i) => (
         <Column key={i} id={column.id} title={column.title} />
       ))}

@@ -18,7 +18,7 @@ import { useUIStore } from '@/stores/ui-store';
 import { useNavStore } from '@/stores/nav-store';
 import { useBoardStore } from '@/stores/board-store';
 
-function MobileSidebar({ children }: { children: React.ReactNode }) {
+function MobileSidebar() {
   const boards = useBoardStore((s) => s.boards);
   const setActiveBoardId = useNavStore((s) => s.setActiveBoardId);
   const { theme, setTheme } = useTheme();
@@ -41,11 +41,10 @@ function MobileSidebar({ children }: { children: React.ReactNode }) {
       {open && <div className="fixed inset-0 bg-black/30 z-40" />}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger>{children}</DialogTrigger>
         <DialogContent
           aria-describedby={undefined}
           showCloseButton={false}
-          className="md:hidden top-1/4 max-w-full mx-auto w-66 px-0 py-4 rounded-lg bg-foreground shadow-lg"
+          className="md:hidden max-w-full top-[45%] w-66 px-0 py-4 rounded-lg bg-foreground shadow-lg"
         >
           <DialogHeader>
             <DialogTitle>

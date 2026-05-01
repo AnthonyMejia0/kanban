@@ -42,7 +42,7 @@ function Sidebar() {
   return (
     <div
       className={`hidden md:flex flex-col h-screen z-5 overflow-y-scroll ${
-        open ? 'md:w-65.25 lg:w-75' : 'w-0'
+        open ? 'md:w-65.25 md:min-w-65.25 lg:w-75 lg:min-w-75' : 'w-0'
       } py-8 bg-foreground border-r border-r-[#979797] transition-[width] duration-200 ease-in-out`}
     >
       <div

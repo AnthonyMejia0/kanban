@@ -57,14 +57,14 @@ function Dashboard() {
   }, [loadBoards]);
 
   return (
-    <div className="w-full h-dvh relative">
+    <div className="w-full h-dvh relative overflow-hidden">
       <DialogContainer />
 
       <div className="flex flex-row w-full h-full">
         <Sidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           <NavBar />
-          <div className="flex flex-1 w-full justify-center items-center">
+          <div className="flex-1 overflow-x-scroll overflow-y-hidden">
             {boards.length === 0 && <NoBoards />}
             {activeBoard && columns.length < 1 && <NoColumns />}
             {activeBoard && columns.length > 0 && <Board />}
