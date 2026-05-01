@@ -1,7 +1,6 @@
 'use client';
 
-import React, { Dispatch, SetStateAction } from 'react';
-import { useBoards } from '@/context/BoardContext';
+import React, { Dispatch, SetStateAction, use } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -15,16 +14,19 @@ import LightIcon from '@/assets/icon-light-theme.svg';
 import DarkIcon from '@/assets/icon-dark-theme.svg';
 import { useTheme } from 'next-themes';
 import { Switch } from '../ui/switch';
-import { useDialog } from '@/context/DialogContext';
+import { useUIStore } from '@/stores/ui-store';
+import { useNavStore } from '@/stores/nav-store';
+import { useBoardStore } from '@/stores/board-store';
 
 function MobileSidebar({ children }: { children: React.ReactNode }) {
-  const { boards, selectBoard, activeBoard } = useBoards();
+  const boards = useBoardStore((s) => s.boards);
+  const setActiveBoardId = useNavStore((s) => s.setActiveBoardId);
   const { theme, setTheme } = useTheme();
-  const {
-    setCreateBoardOpen,
-    mobileSidebarOpen: open,
-    setMobileSidebarOpen: setOpen,
-  } = useDialog();
+  const open = useUIStore((s) => s.mobileSidebarOpen);
+  const setOpen = useUIStore((s) => s.setMobileSidebarOpen);
+  const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const activeBoardId = useNavStore((s) => s.activeBoardId);
+  const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
 
   const handleChangeTheme = (checked: boolean) => {
     if (checked) {
@@ -58,7 +60,7 @@ function MobileSidebar({ children }: { children: React.ReactNode }) {
               <Button
                 key={board.id}
                 onClick={() => {
-                  selectBoard(board);
+                  setActiveBoardId(board.id);
                   setOpen(false);
                 }}
                 className={`flex flex-row justify-start space-x-3 pl-6 w-full h-12 cursor-pointer rounded-l-none rounded-r-full text-secondary-text hover:text-primary-text bg-none hover:bg-button-primary-hover ${

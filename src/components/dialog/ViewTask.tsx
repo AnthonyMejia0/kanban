@@ -1,22 +1,28 @@
 'use client';
 
-import { useDialog } from '@/context/DialogContext';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
-import { useBoards } from '@/context/BoardContext';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Toggle } from '../ui/toggle';
 import { Field, FieldGroup } from '../ui/field';
+import { useUIStore } from '@/stores/ui-store';
+import { useNavStore } from '@/stores/nav-store';
+import { useBoardStore } from '@/stores/board-store';
 
-function EditTask() {
-  const { columns, currentTask, subtasks, toggleSubtask, updateTaskColumn } =
-    useBoards();
-  const { editTaskOpen, setEditTaskOpen } = useDialog();
-  const completedSubtasks = subtasks.filter((subtask) => subtask.complete);
+function ViewTask() {
+  const columns = useBoardStore((s) => s.columns);
+  const tasks = useBoardStore((s) => s.tasks);
+  const subtasks = useBoardStore((s) => s.subtasks);
+  const toggleSubtask = useBoardStore((s) => s.toggleSubtask);
+  const updateTaskColumn = useBoardStore((s) => s.updateTaskColumn);
+  const viewTaskOpen = useUIStore((s) => s.viewTaskOpen);
+  const setViewTaskOpen = useUIStore((s) => s.setViewTaskOpen);
+  const selectedTaskId = useNavStore((s) => s.selectedTaskId);
+  const currentTask = tasks.find((t) => t.id === selectedTaskId) ?? null;
+  const filteredSubtasks = subtasks.filter(
+    (subtask) => subtask.task_id === currentTask?.id,
+  );
+  const completedSubtasks = filteredSubtasks.filter(
+    (subtask) => subtask.complete,
+  );
   const currentColumn = columns.find(
     (column) => column.id === currentTask?.column_id,
   );
@@ -39,25 +45,31 @@ function EditTask() {
   };
 
   return (
-    <Dialog open={editTaskOpen} onOpenChange={setEditTaskOpen}>
+    <Dialog open={viewTaskOpen} onOpenChange={setViewTaskOpen}>
       <DialogContent className="bg-foreground p-8" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-primary-text heading-lg">
             {currentTask?.title}
           </DialogTitle>
 
-          <DialogDescription className="text-secondary-text body-lg mt-4">
-            {currentTask?.description}
-          </DialogDescription>
+          {currentTask?.description && (
+            <p className="text-secondary-text body-lg mt-4">
+              {currentTask?.description}
+            </p>
+          )}
         </DialogHeader>
 
         <FieldGroup>
           <Field>
-            <p className="body-md text-secondary-text mt-2 mb-2">
-              Subtasks ({completedSubtasks.length} of {subtasks.length})
-            </p>
+            {filteredSubtasks.length > 0 && (
+              <p className="body-md text-secondary-text mt-2 mb-2">
+                Subtasks ({completedSubtasks.length} of{' '}
+                {filteredSubtasks.length})
+              </p>
+            )}
 
             {subtasks
+              .filter((subtask) => subtask.task_id === currentTask?.id)
               .sort((a, b) => a.position - b.position)
               .map((subtask) => (
                 <Toggle
@@ -68,7 +80,7 @@ function EditTask() {
                   onPressedChange={() =>
                     handleToggle(subtask.complete, subtask.id)
                   }
-                  className="cursor-pointer disabled:pointer-events-none mt-2 w-full h-max rounded bg-subtask flex flex-row justify-start items-center gap-4 p-3"
+                  className="cursor-pointer disabled:pointer-events-none w-full h-max rounded bg-subtask flex flex-row justify-start items-center gap-4 p-3"
                   pressed={subtask.complete}
                 >
                   <p
@@ -108,4 +120,4 @@ function EditTask() {
   );
 }
 
-export default EditTask;
+export default ViewTask;

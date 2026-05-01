@@ -1,8 +1,9 @@
+import { useUIStore } from '@/stores/ui-store';
 import { Button } from '../ui/button';
-import { useDialog } from '@/context/DialogContext';
 
 function NoColumns() {
-  const { setCreateBoardOpen, setEditingBoard } = useDialog();
+  const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const setEditingBoard = useUIStore((s) => s.setEditingBoard);
 
   return (
     <div className="flex-1 h-full flex flex-col justify-center items-center">

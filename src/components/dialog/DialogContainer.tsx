@@ -1,13 +1,13 @@
 import CreateBoard from './CreateBoard';
 import CreateTask from './CreateTask';
-import EditTask from './EditTask';
+import ViewTask from './ViewTask';
 
 function DialogContainer() {
   return (
     <>
       <CreateBoard />
       <CreateTask />
-      <EditTask />
+      <ViewTask />
     </>
   );
 }

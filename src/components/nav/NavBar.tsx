@@ -1,6 +1,5 @@
 'use client';
 
-import { useBoards } from '@/context/BoardContext';
 import VerticalEllipses from '@/assets/icon-vertical-ellipsis.svg';
 import LogoMobile from '@/assets/logo-mobile.svg';
 import ChevronDown from '@/assets/icon-chevron-down.svg';
@@ -17,22 +16,25 @@ import {
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { useRouter } from 'next/navigation';
 import MobileSidebar from './MobileSidebar';
-import { useDialog } from '@/context/DialogContext';
 import { useTheme } from 'next-themes';
+import { useUIStore } from '@/stores/ui-store';
+import { useNavStore } from '@/stores/nav-store';
+import { useBoardStore } from '@/stores/board-store';
 
 function NavBar() {
   const [mounted, setMounted] = useState(false);
-  const { activeBoard, columns } = useBoards();
+  const boards = useBoardStore((s) => s.boards);
+  const columns = useBoardStore((s) => s.columns);
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
   const { theme } = useTheme();
-  const {
-    sidebarOpen,
-    mobileSidebarOpen,
-    setCreateBoardOpen,
-    setEditingBoard,
-    setCreateTaskOpen,
-  } = useDialog();
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen);
+  const mobileSidebarOpen = useUIStore((s) => s.mobileSidebarOpen);
+  const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const setEditingBoard = useUIStore((s) => s.setEditingBoard);
+  const setCreateTaskOpen = useUIStore((s) => s.setCreateTaskOpen);
+  const activeBoardId = useNavStore((s) => s.activeBoardId);
+  const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();

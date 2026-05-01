@@ -4,28 +4,28 @@ import { Field, FieldGroup } from '../ui/field';
 import { Button } from '../ui/button';
 import CloseIcon from '@/assets/icon-cross.svg';
 import { NewColumn } from '@/types/board';
-import { useBoards } from '@/context/BoardContext';
 import { useUser } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import { Spinner } from '../ui/spinner';
-import { useDialog } from '@/context/DialogContext';
+import { useUIStore } from '@/stores/ui-store';
+import { useNavStore } from '@/stores/nav-store';
+import { useBoardStore } from '@/stores/board-store';
 
 function CreateBoard() {
   const [name, setName] = useState('');
   const [columns, setColumns] = useState<NewColumn[]>([]);
   const [loading, setLoading] = useState(false);
-  const {
-    activeBoard,
-    columns: boardColumns,
-    createBoard,
-    updateBoard,
-  } = useBoards();
+  const boards = useBoardStore((s) => s.boards);
+  const boardColumns = useBoardStore((s) => s.columns);
+  const createBoard = useBoardStore((s) => s.createBoard);
+  const updateBoard = useBoardStore((s) => s.updateBoard);
+
   const { user } = useUser();
-  const {
-    createBoardOpen: open,
-    setCreateBoardOpen: setOpen,
-    editingBoard: editing,
-  } = useDialog();
+  const open = useUIStore((s) => s.createBoardOpen);
+  const setOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const editing = useUIStore((s) => s.editingBoard);
+  const activeBoardId = useNavStore((s) => s.activeBoardId);
+  const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
   const buttonLabel = editing ? 'Save Changes' : 'Create New Board';
 
   const handleAddColumn = () => {
