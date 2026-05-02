@@ -6,6 +6,7 @@ import {
   BoardType,
   ColumnType,
   NewColumn,
+  NewSubtask,
   SubtaskType,
   TaskType,
 } from '@/types/board';
@@ -35,9 +36,17 @@ type BoardStore = {
   createTask: (
     title: string,
     description: string,
-    subtasks: string[],
+    subtasks: NewSubtask[],
     columnId: string,
     activeBoardId: string,
+  ) => Promise<boolean>;
+
+  updateTask: (
+    taskId: string,
+    title: string,
+    description: string,
+    subtasks: NewSubtask[],
+    columnId: string,
   ) => Promise<boolean>;
 
   deleteTask: (taskId: string) => Promise<boolean>;
@@ -217,7 +226,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       if (subtasks.length > 0) {
         const formattedSubtasks = subtasks.map((subtask, i) => ({
           task_id: task.id,
-          title: subtask,
+          title: subtask.title,
           complete: false,
           position: (i + 1) * 1000,
         }));
@@ -227,6 +236,88 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           .insert(formattedSubtasks);
 
         if (subtaskError) return false;
+      }
+
+      await get().loadBoards();
+
+      return true;
+    },
+
+    updateTask: async (taskId, title, description, subtasks, columnId) => {
+      if (!taskId || !title) return false;
+
+      // Update task
+      const { error: taskError } = await supabase
+        .from('kanban_tasks')
+        .update({
+          title,
+          description,
+          column_id: columnId,
+        })
+        .eq('id', taskId);
+
+      if (taskError) return false;
+
+      // Fetch existing subtasks
+      const { data: existingSubtasks, error: fetchError } = await supabase
+        .from('kanban_subtasks')
+        .select('*')
+        .eq('task_id', taskId);
+
+      if (!existingSubtasks || fetchError) return false;
+
+      const existingIds = existingSubtasks.map((s) => s.id);
+
+      // Incoming existing ids
+      const incomingIds = subtasks
+        .filter((s) => !s.id.startsWith('temp-'))
+        .map((s) => s.id);
+
+      // Deleted subtasks
+      const deletedIds = existingIds.filter((id) => !incomingIds.includes(id));
+
+      if (deletedIds.length > 0) {
+        const { error: deleteError } = await supabase
+          .from('kanban_subtasks')
+          .delete()
+          .in('id', deletedIds);
+
+        if (deleteError) return false;
+      }
+
+      // Separate new vs existing
+      const newSubtasks = subtasks.filter((s) => s.id.startsWith('temp-'));
+
+      const updatedSubtasks = subtasks.filter((s) => !s.id.startsWith('temp-'));
+
+      // Insert new subtasks
+      if (newSubtasks.length > 0) {
+        const { error: insertError } = await supabase
+          .from('kanban_subtasks')
+          .insert(
+            newSubtasks.map((s) => ({
+              task_id: taskId,
+              title: s.title,
+              complete: s.complete,
+              position: s.position,
+            })),
+          );
+
+        if (insertError) return false;
+      }
+
+      // Update existing subtasks
+      for (const subtask of updatedSubtasks) {
+        const { error } = await supabase
+          .from('kanban_subtasks')
+          .update({
+            title: subtask.title,
+            complete: subtask.complete,
+            position: subtask.position,
+          })
+          .eq('id', subtask.id);
+
+        if (error) return false;
       }
 
       await get().loadBoards();

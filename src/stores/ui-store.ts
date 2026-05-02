@@ -14,6 +14,7 @@ type UIStore = {
 
   // Derived UI mode
   editingBoard: boolean;
+  editingTask: boolean;
 
   // setters
   setCreateBoardOpen: (v: boolean) => void;
@@ -26,6 +27,7 @@ type UIStore = {
   setMobileSidebarOpen: (v: boolean) => void;
 
   setEditingBoard: (v: boolean) => void;
+  setEditingTask: (v: boolean) => void;
 };
 
 export const useUIStore = create<UIStore>((set) => ({
@@ -42,6 +44,7 @@ export const useUIStore = create<UIStore>((set) => ({
 
   // mode
   editingBoard: false,
+  editingTask: false,
 
   // setters
   setCreateBoardOpen: (v) =>
@@ -57,6 +60,8 @@ export const useUIStore = create<UIStore>((set) => ({
   setMobileSidebarOpen: (v) => set({ mobileSidebarOpen: v }),
 
   setEditingBoard: (v) => set({ editingBoard: v }),
+  setEditingTask: (v) => set({ editingTask: v }),
+
   setDeleteTaskOpen: (v) => set({ deleteTaskOpen: v }),
   setDeleteBoardOpen: (v) => set({ deleteBoardOpen: v }),
 }));

@@ -23,10 +23,11 @@ function ViewTask() {
   const toggleSubtask = useBoardStore((s) => s.toggleSubtask);
   const updateTaskColumn = useBoardStore((s) => s.updateTaskColumn);
   const viewTaskOpen = useUIStore((s) => s.viewTaskOpen);
+  const setCreateTaskOpen = useUIStore((s) => s.setCreateTaskOpen);
   const setViewTaskOpen = useUIStore((s) => s.setViewTaskOpen);
   const setDeleteTaskOpen = useUIStore((s) => s.setDeleteTaskOpen);
+  const setEditingTask = useUIStore((s) => s.setEditingTask);
   const selectedTaskId = useNavStore((s) => s.selectedTaskId);
-  const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
   const currentTask = tasks.find((t) => t.id === selectedTaskId) ?? null;
   const filteredSubtasks = subtasks.filter(
     (subtask) => subtask.task_id === currentTask?.id,
@@ -75,7 +76,14 @@ function ViewTask() {
                 className="bg-foreground w-48 h-max py-4 rounded-lg mt-5"
               >
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="cursor-pointer px-4 body-lg text-secondary-text hover:bg-button-secondary-hover disabled:pointer-events-none">
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setViewTaskOpen(false);
+                      setEditingTask(true);
+                      setCreateTaskOpen(true);
+                    }}
+                    className="cursor-pointer px-4 body-lg text-secondary-text hover:bg-button-secondary-hover disabled:pointer-events-none"
+                  >
                     Edit Task
                   </DropdownMenuItem>
                   <DropdownMenuItem

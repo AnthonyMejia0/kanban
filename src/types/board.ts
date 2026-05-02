@@ -38,3 +38,10 @@ export type SubtaskType = {
   created_at: string;
   position: number;
 };
+
+export type NewSubtask = {
+  id: string;
+  title: string;
+  complete: boolean;
+  position: number;
+};
