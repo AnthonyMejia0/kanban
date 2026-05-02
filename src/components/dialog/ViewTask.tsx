@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import React from 'react';
 
 function ViewTask() {
   const columns = useBoardStore((s) => s.columns);
@@ -28,6 +29,7 @@ function ViewTask() {
   const setDeleteTaskOpen = useUIStore((s) => s.setDeleteTaskOpen);
   const setEditingTask = useUIStore((s) => s.setEditingTask);
   const selectedTaskId = useNavStore((s) => s.selectedTaskId);
+  const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
   const currentTask = tasks.find((t) => t.id === selectedTaskId) ?? null;
   const filteredSubtasks = subtasks.filter(
     (subtask) => subtask.task_id === currentTask?.id,
@@ -57,8 +59,17 @@ function ViewTask() {
     await updateTaskColumn(currentTask.id, column.id);
   };
 
+  const handleOnOpenChange = (open: boolean) => {
+    setViewTaskOpen(open);
+
+    if (!open) {
+      setSelectedTaskId(null);
+      setEditingTask(false);
+    }
+  };
+
   return (
-    <Dialog open={viewTaskOpen} onOpenChange={setViewTaskOpen}>
+    <Dialog open={viewTaskOpen} onOpenChange={handleOnOpenChange}>
       <DialogContent className="bg-foreground p-8" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-primary-text heading-lg flex flex-row items-center justify-between gap-6">

@@ -27,7 +27,6 @@ function CreateTask() {
   const activeBoardId = useNavStore((s) => s.activeBoardId);
   const selectedTaskId = useNavStore((s) => s.selectedTaskId);
   const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
-  const task = tasks.find((t) => t.id === selectedTaskId) ?? null;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -131,14 +130,23 @@ function CreateTask() {
   };
 
   useEffect(() => {
-    if (task) {
-      setTitle(task.title);
-      setDescription(task.description);
-      setColumnId(task.column_id);
-    }
+    console.log('Editing Task Value: ', editingTask);
+    if (selectedTaskId && editingTask) {
+      const task = tasks.find((t) => t.id === selectedTaskId) ?? null;
+      if (task) {
+        setTitle(task.title);
+        setDescription(task.description);
+        setColumnId(task.column_id);
+      }
 
-    setSubtasks(allSubtasks.filter((s) => s.task_id === task?.id));
-  }, [task, allSubtasks]);
+      setSubtasks(allSubtasks.filter((s) => s.task_id === task?.id));
+    } else {
+      setTitle('');
+      setDescription('');
+      setColumnId('');
+      setSubtasks([]);
+    }
+  }, [allSubtasks, selectedTaskId, editingTask]);
 
   return (
     <Dialog open={createTaskOpen} onOpenChange={setCreateTaskOpen}>

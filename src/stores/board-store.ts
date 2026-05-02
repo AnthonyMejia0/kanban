@@ -447,6 +447,8 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       if (error) {
         set({ tasks: previous });
       }
+
+      await get().loadBoards();
     },
   };
 });

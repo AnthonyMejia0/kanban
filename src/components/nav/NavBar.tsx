@@ -37,6 +37,14 @@ function NavBar() {
   const setDeleteBoardOpen = useUIStore((s) => s.setDeleteBoardOpen);
   const activeBoardId = useNavStore((s) => s.activeBoardId);
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
+  const setEditingTask = useUIStore((s) => s.setEditingTask);
+  const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
+
+  const handleCreateTask = () => {
+    setEditingTask(false);
+    setSelectedTaskId(null);
+    setCreateTaskOpen(true);
+  };
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -92,14 +100,14 @@ function NavBar() {
 
       <div className="flex flex-row items-center space-x-4">
         <button
-          onClick={() => setCreateTaskOpen(true)}
+          onClick={handleCreateTask}
           className="hidden md:inline-block cursor-pointer heading-md w-41 h-12 rounded-3xl text-center bg-button-primary hover:bg-button-primary-hover text-white disabled:opacity-25 disabled:pointer-events-none"
           disabled={!activeBoard || columns.length === 0}
         >
           + Add New Task
         </button>
         <button
-          onClick={() => setCreateTaskOpen(true)}
+          onClick={handleCreateTask}
           className="md:hidden heading-md w-12 h-8 rounded-3xl text-center bg-button-primary hover:bg-button-primary-hover text-white disabled:opacity-25 disabled:pointer-events-none"
           disabled={!activeBoard || columns.length === 0}
         >

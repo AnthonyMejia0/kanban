@@ -1,5 +1,6 @@
 import { useBoardStore } from '@/stores/board-store';
 import Task from './Task';
+import { useDroppable } from '@dnd-kit/react';
 
 type ColumnProps = {
   id: string;
@@ -11,6 +12,10 @@ function Column({ id, title }: ColumnProps) {
   const subtasks = useBoardStore((s) => s.subtasks);
   const filteredTasks = tasks.filter((task) => task.column_id === id);
 
+  const { isDropTarget, ref: droppableRef } = useDroppable({
+    id,
+  });
+
   return (
     <div className="h-full w-70 rounded-md">
       <div className="flex flex-row gap-3 items-center mb-6">
@@ -19,13 +24,17 @@ function Column({ id, title }: ColumnProps) {
           {title} ({filteredTasks.length})
         </p>
       </div>
-      <div className="w-full flex flex-col space-y-5 h-full overflow-y-scroll">
+
+      <ul
+        ref={droppableRef}
+        className={`w-full flex flex-col space-y-5 h-full min-h-10 overflow-y-scroll ${isDropTarget && 'bg-new-column/50'}`}
+      >
         {tasks
           .filter((task) => task.column_id === id)
-          .map((task) => (
-            <Task key={task.id} task={task} subtasks={subtasks} />
+          .map((task, i) => (
+            <Task key={task.id} task={task} subtasks={subtasks} index={i} />
           ))}
-      </div>
+      </ul>
     </div>
   );
 }

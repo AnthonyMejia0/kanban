@@ -25,19 +25,16 @@ function Dashboard() {
   const loadBoard = useBoardStore((s) => s.loadBoard);
 
   useEffect(() => {
-    console.log('Boards effect...');
     if (boards.length === 0) {
       setActiveBoardId(null);
       return;
     }
 
-    // No active board yet → select first
     if (!activeBoard) {
       setActiveBoardId(boards[0].id);
       return;
     }
 
-    // Sync updated board data
     const updatedBoard = boards.find((board) => board.id === activeBoard.id);
 
     if (updatedBoard) {
@@ -46,13 +43,11 @@ function Dashboard() {
   }, [boards]);
 
   useEffect(() => {
-    console.log('Active board id: ', activeBoardId);
     if (!activeBoard) return;
     loadBoard(activeBoard.id);
   }, [activeBoard]);
 
   useEffect(() => {
-    console.log('Loading boards on mount...');
     loadBoards();
   }, [loadBoards]);
 
