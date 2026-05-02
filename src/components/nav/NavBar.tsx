@@ -34,6 +34,7 @@ function NavBar() {
   const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
   const setEditingBoard = useUIStore((s) => s.setEditingBoard);
   const setCreateTaskOpen = useUIStore((s) => s.setCreateTaskOpen);
+  const setDeleteBoardOpen = useUIStore((s) => s.setDeleteBoardOpen);
   const activeBoardId = useNavStore((s) => s.activeBoardId);
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
 
@@ -126,6 +127,9 @@ function NavBar() {
                 Edit Board
               </DropdownMenuItem>
               <DropdownMenuItem
+                onClick={() => {
+                  setDeleteBoardOpen(true);
+                }}
                 disabled={!activeBoard}
                 className="px-4 body-lg text-urgent-text hover:bg-button-secondary-hover disabled:pointer-events-none"
               >

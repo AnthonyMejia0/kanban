@@ -73,7 +73,9 @@ function Sidebar() {
               } transition-opacity duration-75`}
             >
               <BoardIcon />
-              <span className="text-inherit heading-md">{board.title}</span>
+              <span className="text-inherit heading-md truncate min-w-0 flex-1">
+                {board.title}
+              </span>
             </Button>
           ))}
           <Button

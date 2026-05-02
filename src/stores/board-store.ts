@@ -11,23 +11,16 @@ import {
 } from '@/types/board';
 
 type BoardStore = {
-  // =====================
-  // STATE (EXACT MATCH)
-  // =====================
   boards: BoardType[];
   columns: ColumnType[];
   tasks: TaskType[];
   subtasks: SubtaskType[];
 
-  // ===== SETTERS =====
   setBoards: (boards: BoardType[]) => void;
   setColumns: (columns: ColumnType[]) => void;
   setTasks: (tasks: TaskType[]) => void;
   setSubtasks: (subtasks: SubtaskType[]) => void;
 
-  // =====================
-  // ACTIONS (EXACT MATCH)
-  // =====================
   loadBoards: () => Promise<void>;
   loadBoard: (boardId: string) => Promise<void>;
 
@@ -37,7 +30,7 @@ type BoardStore = {
     columns: NewColumn[],
   ) => Promise<boolean>;
 
-  deleteBoard: (boardId: string, userId: string) => Promise<boolean>;
+  deleteBoard: (boardId: string) => Promise<boolean>;
 
   createTask: (
     title: string,
@@ -46,6 +39,8 @@ type BoardStore = {
     columnId: string,
     activeBoardId: string,
   ) => Promise<boolean>;
+
+  deleteTask: (taskId: string) => Promise<boolean>;
 
   updateBoard: (
     boardId: string,
@@ -64,9 +59,6 @@ type BoardStore = {
 const supabase = getSupabaseBrowserClient();
 
 export const useBoardStore = create<BoardStore>((set, get) => {
-  // =====================
-  // HELPERS
-  // =====================
   const getUser = async () => {
     const {
       data: { user },
@@ -76,25 +68,16 @@ export const useBoardStore = create<BoardStore>((set, get) => {
   };
 
   return {
-    // =====================
-    // STATE
-    // =====================
     boards: [],
     columns: [],
     tasks: [],
     subtasks: [],
 
-    // =====================
-    // SETTERS
-    // =====================
     setBoards: (boards) => set({ boards }),
     setColumns: (columns) => set({ columns }),
     setTasks: (tasks) => set({ tasks }),
     setSubtasks: (subtasks) => set({ subtasks }),
 
-    // =====================
-    // LOAD BOARDS (UNCHANGED)
-    // =====================
     loadBoards: async () => {
       const user = await getUser();
       if (!user) return;
@@ -105,7 +88,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
         .eq('user_id', user.id)
         .order('created_at');
 
-      if (error || !data || data.length < 1) return;
+      if (error || !data) return;
 
       set({ boards: [...data] });
     },
@@ -153,9 +136,6 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       }
     },
 
-    // =====================
-    // CREATE BOARD (UNCHANGED)
-    // =====================
     createBoard: async (title, userId, columns) => {
       if (!title || !userId) return false;
 
@@ -188,13 +168,22 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       return true;
     },
 
-    deleteBoard: async (boardId, userId) => {
+    deleteBoard: async (boardId) => {
+      const user = await getUser();
+      if (!user) return false;
+
+      const { error } = await supabase
+        .from('kanban_boards')
+        .delete()
+        .eq('id', boardId)
+        .eq('user_id', user.id);
+
+      if (error) return false;
+
+      await get().loadBoards();
       return true;
     },
 
-    // =====================
-    // CREATE TASK (UNCHANGED)
-    // =====================
     createTask: async (
       title,
       description,
@@ -245,9 +234,18 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       return true;
     },
 
-    // =====================
-    // UPDATE BOARD (UNCHANGED)
-    // =====================
+    deleteTask: async (taskId) => {
+      const { error } = await supabase
+        .from('kanban_tasks')
+        .delete()
+        .eq('id', taskId);
+
+      if (error) return false;
+
+      await get().loadBoards();
+      return true;
+    },
+
     updateBoard: async (boardId, title, columns) => {
       if (!boardId || !title) return false;
 
@@ -316,9 +314,6 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       return true;
     },
 
-    // =====================
-    // TOGGLE SUBTASK (UNCHANGED)
-    // =====================
     toggleSubtask: async (current, subtaskId) => {
       const { subtasks } = get();
 
@@ -342,9 +337,6 @@ export const useBoardStore = create<BoardStore>((set, get) => {
       }
     },
 
-    // =====================
-    // UPDATE TASK COLUMN (UNCHANGED)
-    // =====================
     updateTaskColumn: async (taskId, columnId) => {
       const { tasks } = get();
 

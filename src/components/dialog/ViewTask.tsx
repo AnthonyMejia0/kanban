@@ -7,6 +7,14 @@ import { useUIStore } from '@/stores/ui-store';
 import { useNavStore } from '@/stores/nav-store';
 import { useBoardStore } from '@/stores/board-store';
 import CheckIcon from '@/assets/icon-check.svg';
+import VerticalEllipses from '@/assets/icon-vertical-ellipsis.svg';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 
 function ViewTask() {
   const columns = useBoardStore((s) => s.columns);
@@ -16,7 +24,9 @@ function ViewTask() {
   const updateTaskColumn = useBoardStore((s) => s.updateTaskColumn);
   const viewTaskOpen = useUIStore((s) => s.viewTaskOpen);
   const setViewTaskOpen = useUIStore((s) => s.setViewTaskOpen);
+  const setDeleteTaskOpen = useUIStore((s) => s.setDeleteTaskOpen);
   const selectedTaskId = useNavStore((s) => s.selectedTaskId);
+  const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
   const currentTask = tasks.find((t) => t.id === selectedTaskId) ?? null;
   const filteredSubtasks = subtasks.filter(
     (subtask) => subtask.task_id === currentTask?.id,
@@ -42,6 +52,7 @@ function ViewTask() {
 
     if (!column || !currentTask) return;
 
+    setViewTaskOpen(false);
     await updateTaskColumn(currentTask.id, column.id);
   };
 
@@ -49,8 +60,36 @@ function ViewTask() {
     <Dialog open={viewTaskOpen} onOpenChange={setViewTaskOpen}>
       <DialogContent className="bg-foreground p-8" aria-describedby={undefined}>
         <DialogHeader>
-          <DialogTitle className="text-primary-text heading-lg">
-            {currentTask?.title}
+          <DialogTitle className="text-primary-text heading-lg flex flex-row items-center justify-between gap-6">
+            <p className="text-inherit heading-xl flex-1">
+              {currentTask?.title}
+            </p>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-max p-2 cursor-pointer">
+                  <VerticalEllipses className="cursor-pointer" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="bg-foreground w-48 h-max py-4 rounded-lg mt-5"
+              >
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="cursor-pointer px-4 body-lg text-secondary-text hover:bg-button-secondary-hover disabled:pointer-events-none">
+                    Edit Task
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setViewTaskOpen(false);
+                      setDeleteTaskOpen(true);
+                    }}
+                    className="cursor-pointer px-4 body-lg text-urgent-text hover:bg-button-secondary-hover disabled:pointer-events-none"
+                  >
+                    Delete Task
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </DialogTitle>
 
           {currentTask?.description && (

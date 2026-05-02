@@ -5,6 +5,8 @@ type UIStore = {
   createBoardOpen: boolean;
   createTaskOpen: boolean;
   viewTaskOpen: boolean;
+  deleteTaskOpen: boolean;
+  deleteBoardOpen: boolean;
 
   // Sidebar
   sidebarOpen: boolean;
@@ -17,6 +19,8 @@ type UIStore = {
   setCreateBoardOpen: (v: boolean) => void;
   setCreateTaskOpen: (v: boolean) => void;
   setViewTaskOpen: (v: boolean) => void;
+  setDeleteTaskOpen: (v: boolean) => void;
+  setDeleteBoardOpen: (v: boolean) => void;
 
   setSidebarOpen: (v: boolean) => void;
   setMobileSidebarOpen: (v: boolean) => void;
@@ -29,6 +33,8 @@ export const useUIStore = create<UIStore>((set) => ({
   createBoardOpen: false,
   createTaskOpen: false,
   viewTaskOpen: false,
+  deleteTaskOpen: false,
+  deleteBoardOpen: false,
 
   // sidebar
   sidebarOpen: true,
@@ -51,4 +57,6 @@ export const useUIStore = create<UIStore>((set) => ({
   setMobileSidebarOpen: (v) => set({ mobileSidebarOpen: v }),
 
   setEditingBoard: (v) => set({ editingBoard: v }),
+  setDeleteTaskOpen: (v) => set({ deleteTaskOpen: v }),
+  setDeleteBoardOpen: (v) => set({ deleteBoardOpen: v }),
 }));

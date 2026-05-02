@@ -1,6 +1,8 @@
 import MobileSidebar from '../nav/MobileSidebar';
 import CreateBoard from './CreateBoard';
 import CreateTask from './CreateTask';
+import DeleteBoard from './DeleteBoard';
+import DeleteTask from './DeleteTask';
 import ViewTask from './ViewTask';
 
 function DialogContainer() {
@@ -10,6 +12,8 @@ function DialogContainer() {
       <CreateTask />
       <ViewTask />
       <MobileSidebar />
+      <DeleteTask />
+      <DeleteBoard />
     </>
   );
 }
