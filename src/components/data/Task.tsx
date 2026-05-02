@@ -1,5 +1,5 @@
-import { useBoards } from '@/context/BoardContext';
-import { useDialog } from '@/context/DialogContext';
+import { useNavStore } from '@/stores/nav-store';
+import { useUIStore } from '@/stores/ui-store';
 import { SubtaskType, TaskType } from '@/types/board';
 
 type TaskProps = {
@@ -8,13 +8,19 @@ type TaskProps = {
 };
 
 function Task({ task, subtasks }: TaskProps) {
-  const { setSelectedTaskId } = useBoards();
-  const { setEditTaskOpen } = useDialog();
-  const completedSubtasks = subtasks.filter((subtask) => subtask.complete);
+  const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
+  const setViewTaskOpen = useUIStore((s) => s.setViewTaskOpen);
+  const filteredSubtasks = subtasks.filter(
+    (subtask) => subtask.task_id === task.id,
+  );
+  const completedSubtasks = filteredSubtasks.filter(
+    (subtask) => subtask.complete,
+  );
 
   const handleClick = () => {
+    console.log(task);
     setSelectedTaskId(task.id);
-    setEditTaskOpen(true);
+    setViewTaskOpen(true);
   };
 
   return (
@@ -22,10 +28,14 @@ function Task({ task, subtasks }: TaskProps) {
       onClick={handleClick}
       className="w-full h-max flex flex-col justify-start items-start cursor-pointer bg-foreground rounded-lg drop-shadow-lg px-4 py-5.75"
     >
-      <span className="heading-md text-primary-text">{task.title}</span>
-      <span className="body-md text-secondary-text mt-2">
-        {completedSubtasks.length} of {subtasks.length} subtasks
+      <span className="heading-md text-primary-text text-left">
+        {task.title}
       </span>
+      {filteredSubtasks.length > 0 && (
+        <span className="body-md text-secondary-text mt-2">
+          {completedSubtasks.length} of {filteredSubtasks.length} subtasks
+        </span>
+      )}
     </button>
   );
 }

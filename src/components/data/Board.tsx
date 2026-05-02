@@ -1,13 +1,14 @@
-import { useBoards } from '@/context/BoardContext';
+import { useBoardStore } from '@/stores/board-store';
 import Column from './Column';
-import { useDialog } from '@/context/DialogContext';
+import { useUIStore } from '@/stores/ui-store';
 
 function Board() {
-  const { columns } = useBoards();
-  const { setCreateBoardOpen, setEditingBoard } = useDialog();
+  const columns = useBoardStore((s) => s.columns);
+  const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const setEditingBoard = useUIStore((s) => s.setEditingBoard);
 
   return (
-    <div className="w-full h-full flex flex-row gap-6 p-6 overflow-x-scroll overflow-y-hidden">
+    <div className="w-full min-w-max h-full flex gap-6 p-6 overflow-x-auto overflow-y-hidden">
       {columns.map((column, i) => (
         <Column key={i} id={column.id} title={column.title} />
       ))}

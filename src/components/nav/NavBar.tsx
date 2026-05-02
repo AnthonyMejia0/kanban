@@ -1,6 +1,5 @@
 'use client';
 
-import { useBoards } from '@/context/BoardContext';
 import VerticalEllipses from '@/assets/icon-vertical-ellipsis.svg';
 import LogoMobile from '@/assets/logo-mobile.svg';
 import ChevronDown from '@/assets/icon-chevron-down.svg';
@@ -17,22 +16,27 @@ import {
 import { getSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 import { useRouter } from 'next/navigation';
 import MobileSidebar from './MobileSidebar';
-import { useDialog } from '@/context/DialogContext';
 import { useTheme } from 'next-themes';
+import { useUIStore } from '@/stores/ui-store';
+import { useNavStore } from '@/stores/nav-store';
+import { useBoardStore } from '@/stores/board-store';
 
 function NavBar() {
   const [mounted, setMounted] = useState(false);
-  const { activeBoard, columns } = useBoards();
+  const boards = useBoardStore((s) => s.boards);
+  const columns = useBoardStore((s) => s.columns);
   const supabase = getSupabaseBrowserClient();
   const router = useRouter();
   const { theme } = useTheme();
-  const {
-    sidebarOpen,
-    mobileSidebarOpen,
-    setCreateBoardOpen,
-    setEditingBoard,
-    setCreateTaskOpen,
-  } = useDialog();
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen);
+  const mobileSidebarOpen = useUIStore((s) => s.mobileSidebarOpen);
+  const setMobileSidebarOpen = useUIStore((s) => s.setMobileSidebarOpen);
+  const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const setEditingBoard = useUIStore((s) => s.setEditingBoard);
+  const setCreateTaskOpen = useUIStore((s) => s.setCreateTaskOpen);
+  const setDeleteBoardOpen = useUIStore((s) => s.setDeleteBoardOpen);
+  const activeBoardId = useNavStore((s) => s.activeBoardId);
+  const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -49,10 +53,10 @@ function NavBar() {
   if (!mounted) return;
 
   return (
-    <div className="w-full md:flex-1 h-16 max-h-16 md:h-20 md:max-h-20 bg-foreground flex justify-between items-center px-4 md:px-6 border-b border-b-[#979797] transition-colors duration-200 ease-in-out">
+    <div className="w-full md:flex-1 h-16 max-h-16 md:h-20 md:max-h-20 bg-foreground flex justify-between px-4 md:px-6 border-b border-b-[#979797] transition-colors duration-200 ease-in-out">
       <div className="flex flex-row items-center">
         {!sidebarOpen && (
-          <div>
+          <div className="hidden md:inline-block">
             <div className={`${theme === 'dark' && 'hidden'} h-full ml-3 mr-8`}>
               <LogoDark />
             </div>
@@ -64,26 +68,27 @@ function NavBar() {
           </div>
         )}
         {!sidebarOpen && (
-          <div className="h-16 max-h-16 md:h-20 md:max-h-20 w-px bg-[#979797]"></div>
+          <div className="hidden md:inline-block h-16 max-h-16 md:h-20 md:max-h-20 w-px bg-[#979797]"></div>
         )}
         <p className="hidden md:inline-block heading-lg md:heading-xl text-primary-text flex-1 ml-6 mr-4">
           {activeBoard?.title ?? 'Select a board'}
         </p>
       </div>
 
-      <MobileSidebar>
-        <div className="md:hidden flex flex-row space-x-4">
-          <LogoMobile />
-          <div className="flex flex-row items-center heading-lg md:heading-xl text-primary-text cursor-pointer">
-            {activeBoard?.title ?? 'Select a board'}
-            <ChevronDown
-              className={`ml-2 ${
-                mobileSidebarOpen && 'scale-y-[-1]'
-              } ease-in-out duration-500`}
-            />
-          </div>
+      <div
+        onClick={() => setMobileSidebarOpen(true)}
+        className="md:hidden flex flex-row items-center flex-1 space-x-4"
+      >
+        <LogoMobile />
+        <div className="flex flex-row items-center heading-lg md:heading-xl text-primary-text cursor-pointer">
+          {activeBoard?.title ?? 'Select a board'}
+          <ChevronDown
+            className={`ml-2 ${
+              mobileSidebarOpen && 'scale-y-[-1]'
+            } ease-in-out duration-500`}
+          />
         </div>
-      </MobileSidebar>
+      </div>
 
       <div className="flex flex-row items-center space-x-4">
         <button
@@ -122,6 +127,9 @@ function NavBar() {
                 Edit Board
               </DropdownMenuItem>
               <DropdownMenuItem
+                onClick={() => {
+                  setDeleteBoardOpen(true);
+                }}
                 disabled={!activeBoard}
                 className="px-4 body-lg text-urgent-text hover:bg-button-secondary-hover disabled:pointer-events-none"
               >

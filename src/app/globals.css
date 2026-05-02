@@ -14,6 +14,8 @@
   --button-secondary-hover: rgba(99, 95, 199, 0.25);
   --button-destructive: #ea5555;
   --button-destructive-hover: #ff9898;
+  --button-cancel: rgba(99, 95, 199, 0.1);
+  --button-cancel-hover: rgba(99, 95, 199, 0.25);
   --subtask: #f4f7fd;
   --subtask-hover: #635fc7;
   --text-field: #ffffff;
@@ -28,7 +30,8 @@
   --foreground: #2b2c37;
   --primary-text: #ffffff;
   --button-secondary: #ffffff;
-  --subtask: #20212c;
+  --button-cancel: #ffffff;
+  --button-cancel-hover: #ffffff;
   --text-field: #2b2c37;
   --new-column: #2b2c37;
   --subtask: #20212c;
@@ -46,6 +49,8 @@
   --color-button-secondary-hover: var(--button-secondary-hover);
   --color-button-destructive: var(--button-destructive);
   --color-button-destructive-hover: var(--button-destructive-hover);
+  --color-button-cancel: var(--button-cancel);
+  --color-button-cancel-hover: var(--button-cancel-hover);
   --color-subtask: var(--subtask);
   --color-subtask-hover: var(--subtask-hover);
   --color-text-field-hover: var(--text-field-hover);

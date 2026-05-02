@@ -8,20 +8,22 @@ import LightIcon from '@/assets/icon-light-theme.svg';
 import DarkIcon from '@/assets/icon-dark-theme.svg';
 import HideSidebaricon from '@/assets/icon-hide-sidebar.svg';
 import { useTheme } from 'next-themes';
-import { useBoards } from '@/context/BoardContext';
 import { Button } from '../ui/button';
 import { Switch } from '../ui/switch';
-import { useDialog } from '@/context/DialogContext';
+import { useUIStore } from '@/stores/ui-store';
+import { useNavStore } from '@/stores/nav-store';
+import { useBoardStore } from '@/stores/board-store';
 
 function Sidebar() {
   const [mounted, setMounted] = useState(false);
-  const { boards, activeBoard, selectBoard } = useBoards();
+  const boards = useBoardStore((s) => s.boards);
+  const setActiveBoardId = useNavStore((s) => s.setActiveBoardId);
   const { theme, setTheme } = useTheme();
-  const {
-    sidebarOpen: open,
-    setSidebarOpen: setOpen,
-    setCreateBoardOpen,
-  } = useDialog();
+  const open = useUIStore((s) => s.sidebarOpen);
+  const setOpen = useUIStore((s) => s.setSidebarOpen);
+  const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const activeBoardId = useNavStore((s) => s.activeBoardId);
+  const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
 
   const handleChangeTheme = (checked: boolean) => {
     if (checked) {
@@ -39,8 +41,8 @@ function Sidebar() {
 
   return (
     <div
-      className={`hidden md:flex flex-col h-screen z-5 ${
-        open ? 'md:w-65.25 lg:w-75' : 'w-0'
+      className={`hidden md:flex flex-col h-screen z-5 overflow-y-scroll ${
+        open ? 'md:w-65.25 md:min-w-65.25 lg:w-75 lg:min-w-75' : 'w-0'
       } py-8 bg-foreground border-r border-r-[#979797] transition-[width] duration-200 ease-in-out`}
     >
       <div
@@ -65,13 +67,15 @@ function Sidebar() {
           {boards.map((board) => (
             <Button
               key={board.id}
-              onClick={() => selectBoard(board)}
+              onClick={() => setActiveBoardId(board.id)}
               className={`flex flex-row justify-start space-x-3 pl-8 w-full h-12 cursor-pointer rounded-l-none rounded-r-full text-secondary-text hover:text-button-primary bg-none hover:bg-button-secondary-hover ${
                 activeBoard === board && 'text-white bg-button-primary'
               } transition-opacity duration-75`}
             >
               <BoardIcon />
-              <span className="text-inherit heading-md">{board.title}</span>
+              <span className="text-inherit heading-md truncate min-w-0 flex-1">
+                {board.title}
+              </span>
             </Button>
           ))}
           <Button
@@ -82,8 +86,8 @@ function Sidebar() {
             <span className="text-inherit heading-md">+ Create New Board</span>
           </Button>
         </div>
-        <div className="w-full px-6 h-12">
-          <div className="w-full h-full bg-background rounded-md flex flex-row space-x-6 items-center justify-center">
+        <div className="w-full px-6 h-12 min-h-12">
+          <div className="w-full h-full min-h-full bg-background rounded-md flex flex-row space-x-6 items-center justify-center">
             <LightIcon />
             <Switch
               id="theme"
