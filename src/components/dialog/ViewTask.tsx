@@ -84,7 +84,7 @@ function ViewTask() {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="end"
-                className="bg-foreground w-48 h-max py-4 rounded-lg mt-5"
+                className="bg-foreground w-48 h-max py-4 rounded-lg mt-5 shadow-2xl"
               >
                 <DropdownMenuGroup>
                   <DropdownMenuItem
@@ -143,7 +143,9 @@ function ViewTask() {
                   pressed={subtask.complete}
                 >
                   <div
-                    className={`w-4 h-4 flex justify-center items-center rounded-xs ${subtask.complete ? 'bg-button-primary' : 'bg-white'}`}
+                    className={`w-4 h-4 flex justify-center items-center rounded-xs ${
+                      subtask.complete ? 'bg-button-primary' : 'bg-white'
+                    }`}
                   >
                     {subtask.complete && (
                       <CheckIcon className="max-w-3 max-h-3 text-white" />

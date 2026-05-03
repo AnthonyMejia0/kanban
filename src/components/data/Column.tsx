@@ -18,7 +18,7 @@ function Column({ id, title }: ColumnProps) {
 
   return (
     <div className="h-full w-70 rounded-md">
-      <div className="flex flex-row gap-3 items-center mb-6">
+      <div className="flex flex-row gap-3 items-center mb-6 px-2">
         <div className="bg-green-500 w-3.75 h-3.75 rounded-full"></div>
         <p className="text-secondary-text heading-sm">
           {title} ({filteredTasks.length})
@@ -27,12 +27,14 @@ function Column({ id, title }: ColumnProps) {
 
       <ul
         ref={droppableRef}
-        className={`w-full flex flex-col space-y-5 h-full min-h-10 overflow-y-scroll ${isDropTarget && 'bg-new-column/50'}`}
+        className={`w-full flex flex-col space-y-4 h-full min-h-10 overflow-y-scroll p-2 ${
+          isDropTarget && 'bg-new-column/50'
+        }`}
       >
         {tasks
           .filter((task) => task.column_id === id)
-          .map((task, i) => (
-            <Task key={task.id} task={task} subtasks={subtasks} index={i} />
+          .map((task) => (
+            <Task key={task.id} task={task} subtasks={subtasks} />
           ))}
       </ul>
     </div>

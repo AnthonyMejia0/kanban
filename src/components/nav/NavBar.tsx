@@ -121,7 +121,7 @@ function NavBar() {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="bg-foreground w-48 h-max py-4 rounded-lg mt-5"
+            className="bg-foreground w-48 h-max py-4 rounded-lg mt-5 shadow-2xl"
           >
             <DropdownMenuGroup>
               <DropdownMenuItem

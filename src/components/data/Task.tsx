@@ -6,10 +6,9 @@ import { useDraggable } from '@dnd-kit/react';
 type TaskProps = {
   task: TaskType;
   subtasks: SubtaskType[];
-  index: number;
 };
 
-function Task({ task, subtasks, index }: TaskProps) {
+function Task({ task, subtasks }: TaskProps) {
   const setSelectedTaskId = useNavStore((s) => s.setSelectedTaskId);
   const setViewTaskOpen = useUIStore((s) => s.setViewTaskOpen);
   const filteredSubtasks = subtasks.filter(
@@ -32,7 +31,7 @@ function Task({ task, subtasks, index }: TaskProps) {
     <button
       ref={sortableRef}
       onClick={handleClick}
-      className="w-full h-max flex flex-col justify-start items-start cursor-pointer bg-foreground hover:opacity-70 rounded-lg drop-shadow-lg px-4 py-5.75"
+      className="w-full h-max flex flex-col justify-start items-start cursor-pointer bg-foreground hover:opacity-70 rounded-lg shadow-md px-4 py-5.75 overflow-hidden"
     >
       <span className="heading-md text-primary-text text-left">
         {task.title}
