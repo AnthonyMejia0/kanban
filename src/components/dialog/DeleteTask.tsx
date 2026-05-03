@@ -55,14 +55,14 @@ function DeleteTask() {
         <DialogFooter className="w-full flex flex-col md:flex-row md:justify-evenly items-center">
           <Button
             onClick={handleDeleteTask}
-            className="w-50 rounded-[20px] cursor-pointer disabled:pointer-events-none bg-button-destructive hover:bg-button-destructive-hover font-bold text-[13px] leading-5.75 text-white"
+            className="w-full min-h-10 flex-1 rounded-[20px] cursor-pointer disabled:pointer-events-none bg-button-destructive hover:bg-button-destructive-hover font-bold text-[13px] leading-5.75 text-white"
             disabled={loading}
           >
             {loading ? <Spinner width={16} height={16} /> : 'Delete'}
           </Button>
           <Button
             onClick={() => setDeleteTaskOpen(false)}
-            className="w-50 rounded-[20px] cursor-pointer disabled:pointer-events-none bg-button-cancel hover:bg-button-cancel-hover font-bold text-[13px] leading-5.75 text-button-primary"
+            className="w-full min-h-10 flex-1 rounded-[20px] cursor-pointer disabled:pointer-events-none bg-button-cancel hover:bg-button-cancel-hover font-bold text-[13px] leading-5.75 text-button-primary"
             disabled={loading}
           >
             Cancel

@@ -130,7 +130,7 @@ function NavBar() {
                   setCreateBoardOpen(true);
                 }}
                 disabled={!activeBoard}
-                className="px-4 body-lg text-secondary-text hover:bg-button-secondary-hover disabled:pointer-events-none"
+                className="cursor-pointer px-4 body-lg text-secondary-text hover:bg-button-secondary-hover disabled:pointer-events-none"
               >
                 Edit Board
               </DropdownMenuItem>
@@ -139,7 +139,7 @@ function NavBar() {
                   setDeleteBoardOpen(true);
                 }}
                 disabled={!activeBoard}
-                className="px-4 body-lg text-urgent-text hover:bg-button-secondary-hover disabled:pointer-events-none"
+                className="cursor-pointer px-4 body-lg text-urgent-text hover:bg-button-secondary-hover disabled:pointer-events-none"
               >
                 Delete Board
               </DropdownMenuItem>
@@ -147,7 +147,7 @@ function NavBar() {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 onClick={handleLogout}
-                className="px-4 body-lg text-button-primary hover:bg-button-secondary-hover"
+                className="cursor-pointer px-4 body-lg text-button-primary hover:bg-button-secondary-hover"
               >
                 Logout
               </DropdownMenuItem>

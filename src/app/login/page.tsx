@@ -1,7 +1,6 @@
 'use client';
 
 import { LoginForm } from '@/components/login-form';
-import { GalleryVerticalEndIcon } from 'lucide-react';
 import DarkLogo from '@/assets/logo-dark.svg';
 import LightLogo from '@/assets/logo-light.svg';
 import { useTheme } from 'next-themes';

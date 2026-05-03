@@ -100,3 +100,7 @@
 body {
   @apply transition-colors duration-200 ease-in-out;
 }
+
+input {
+  @apply text-base!;
+}
