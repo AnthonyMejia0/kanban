@@ -37,7 +37,12 @@ function Board() {
         }}
       >
         {columns.map((column, i) => (
-          <Column key={column.id} id={column.id} title={column.title} />
+          <Column
+            key={column.id}
+            id={column.id}
+            title={column.title}
+            color={column.color}
+          />
         ))}
       </DragDropProvider>
       <button

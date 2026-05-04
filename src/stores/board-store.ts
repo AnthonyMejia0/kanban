@@ -164,6 +164,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           board_id: board.id,
           title: column.title,
           position: column.position,
+          color: column.color,
         }));
 
         const { error: columnsError } = await supabase
@@ -383,6 +384,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
               board_id: boardId,
               title: c.title,
               position: c.position,
+              color: c.color,
             })),
           );
 
@@ -395,6 +397,7 @@ export const useBoardStore = create<BoardStore>((set, get) => {
           .update({
             title: column.title,
             position: column.position,
+            color: column.color,
           })
           .eq('id', column.id);
 

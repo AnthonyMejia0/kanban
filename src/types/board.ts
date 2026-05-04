@@ -9,6 +9,7 @@ export type NewColumn = {
   id: string;
   title: string;
   position: number;
+  color: string;
 };
 
 export type ColumnType = {
@@ -17,6 +18,7 @@ export type ColumnType = {
   title: string;
   position: number;
   created_at: string;
+  color: string;
 };
 
 export type TaskType = {

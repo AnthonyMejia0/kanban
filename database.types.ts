@@ -38,6 +38,7 @@ export type Database = {
       kanban_columns: {
         Row: {
           board_id: string
+          color: string
           created_at: string
           id: string
           position: number
@@ -45,6 +46,7 @@ export type Database = {
         }
         Insert: {
           board_id: string
+          color?: string
           created_at?: string
           id?: string
           position: number
@@ -52,6 +54,7 @@ export type Database = {
         }
         Update: {
           board_id?: string
+          color?: string
           created_at?: string
           id?: string
           position?: number

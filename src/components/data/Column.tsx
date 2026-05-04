@@ -5,9 +5,10 @@ import { useDroppable } from '@dnd-kit/react';
 type ColumnProps = {
   id: string;
   title: string;
+  color: string;
 };
 
-function Column({ id, title }: ColumnProps) {
+function Column({ id, title, color }: ColumnProps) {
   const tasks = useBoardStore((s) => s.tasks);
   const subtasks = useBoardStore((s) => s.subtasks);
   const filteredTasks = tasks.filter((task) => task.column_id === id);
@@ -19,7 +20,12 @@ function Column({ id, title }: ColumnProps) {
   return (
     <div className="h-full w-70 rounded-md">
       <div className="flex flex-row gap-3 items-center mb-6 px-2">
-        <div className="bg-green-500 w-3.75 h-3.75 rounded-full"></div>
+        <div
+          className="w-3.75 h-3.75 rounded-full"
+          style={{
+            backgroundColor: color,
+          }}
+        ></div>
         <p className="text-secondary-text heading-sm">
           {title} ({filteredTasks.length})
         </p>

@@ -22,8 +22,14 @@ function Sidebar() {
   const open = useUIStore((s) => s.sidebarOpen);
   const setOpen = useUIStore((s) => s.setSidebarOpen);
   const setCreateBoardOpen = useUIStore((s) => s.setCreateBoardOpen);
+  const setEditingBoard = useUIStore((s) => s.setEditingBoard);
   const activeBoardId = useNavStore((s) => s.activeBoardId);
   const activeBoard = boards.find((b) => b.id === activeBoardId) ?? null;
+
+  const handleCreateBoard = () => {
+    setEditingBoard(false);
+    setCreateBoardOpen(true);
+  };
 
   const handleChangeTheme = (checked: boolean) => {
     if (checked) {
@@ -79,7 +85,7 @@ function Sidebar() {
             </Button>
           ))}
           <Button
-            onClick={() => setCreateBoardOpen(true)}
+            onClick={handleCreateBoard}
             className={`flex flex-row justify-start space-x-3 pl-8 w-full h-12 cursor-pointer rounded-l-none rounded-r-full text-button-primary bg-none hover:bg-button-secondary-hover`}
           >
             <BoardIcon />
