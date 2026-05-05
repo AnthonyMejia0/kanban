@@ -1,13 +1,6 @@
 'use client';
 
-import React, { Dispatch, SetStateAction, use } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import BoardIcon from '@/assets/icon-board.svg';
 import LightIcon from '@/assets/icon-light-theme.svg';
@@ -44,7 +37,7 @@ function MobileSidebar() {
         <DialogContent
           aria-describedby={undefined}
           showCloseButton={false}
-          className="md:hidden max-w-full top-[45%] w-66 px-0 py-4 rounded-lg bg-foreground shadow-lg"
+          className="md:hidden max-w-full min-w-max top-[45%] w-66 px-0 py-4 rounded-lg bg-foreground shadow-lg"
         >
           <DialogHeader>
             <DialogTitle>

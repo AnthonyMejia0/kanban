@@ -104,3 +104,7 @@ body {
 input {
   @apply text-base!;
 }
+
+textarea {
+  @apply text-base!;
+}
